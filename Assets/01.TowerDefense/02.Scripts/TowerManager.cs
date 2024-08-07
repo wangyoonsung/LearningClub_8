@@ -70,15 +70,15 @@ public class TowerManager : Singleton<TowerManager> {
   	}
 
 	public void selectedTower(TowerButton towerBtn) {
-		if (towerBtn.TowerPrice <= GameManager.Instance.TotalMoney){
+		if (towerBtn.TowerPrice <= GamePlayManager.Instance.TotalMoney){
 			towerBtnPressed = towerBtn;
 			enableDragSprite(towerBtn.DragSprite);
 		}
 	}
 
 	public void buyTower(int price) {
-		GameManager.Instance.subtractMoney(price);
-		GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.BuildTower);
+		GamePlayManager.Instance.subtractMoney(price);
+		GamePlayManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.BuildTower);
 	}
 
 	private void followMouse() {

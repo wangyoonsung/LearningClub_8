@@ -1,226 +1,69 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
+public class GameManager : MonoBehaviour
+{
+    // 싱글톤 인스턴스를 위한 정적 변수
+    private static GameManager _instance;
 
-public enum gameStatus {
-	next, play, gameover, win
+    // GameManager 인스턴스를 반
+    public static GameManager Instance
+    {
+        get
+        {
+            // 인스턴스가 없으면 찾거나 새로 생성
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<GameManager>();
+
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject("GameManager");
+                    _instance = singletonObject.AddComponent<GameManager>();
+                    DontDestroyOnLoad(singletonObject);
+                }
+            }
+            return _instance;
+        }
+    }
+
+    // Awake 메서드에서 싱글톤 패턴 적용
+    private void Awake()
+    {
+        // 인스턴스가 존재하지 않으면 이 인스턴스를 설정하고 파괴되지 않도록 설정
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            // 인스턴스가 이미 존재하면 이 게임 오브젝트를 파괴
+            if (_instance != this)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    // 필요한 게임 관리 기능 추가
+    public void StartGame()
+    {
+        Debug.Log("게임 시작 >>>>>>>> ");
+        // 게임 시작 로직 추가
+    }
+
+    public void EndGame()
+    {
+        Debug.Log("게임 종료 >>>>>>>>");
+        // 게임 종료 로직 추가
+    }
+
+    // 씬 이동 기능 추가
+    public void LoadScene(string sceneName)
+    {
+        Debug.Log("씬이동 이름 : " + sceneName);
+        SceneManager.LoadScene(sceneName);
+    }
+
 }
-
-public class GameManager : Singleton<GameManager> {
-	const float waitingTime = 1f;
-	
-	[SerializeField]
-	private int totalWaves = 10;
-	[SerializeField]
-	private GameObject spawnPoint;
-	[SerializeField]
-	private Enemy[] enemies;
-	[SerializeField]
-	private int totalEnemies = 3;
-	[SerializeField]
-	private int enemiesPerSpawn;
-	[SerializeField]
-	private Text totalMoneyLabel;
-	[SerializeField]
-	private Image GameStatusImage;
-	[SerializeField]
-	private Text nextWaveBtnLabel;
-	[SerializeField]
-	private Text escapedLabel;
-	[SerializeField]
-	private Text waveLabel;
-	[SerializeField]
-	private Text GameStatusLabel;
-	[SerializeField]
-	private int waveNumber = 0;
-	private int totalMoney = 10; 
-	private int totalEscaped = 0;
-	private int roundEscaped = 0;
-	private int totalKilled = 0;
-	private int enemiesToSpawn = 0;
-	private gameStatus currentState = gameStatus.play;
-	private AudioSource audioSource;
-
-	public List<Enemy> EnemyList = new List<Enemy>();
-
-	public gameStatus CurrentState {
-		get {
-			return currentState;
-		}
-	}
-	public int WaveNumber {
-		get {
-			return waveNumber;
-		} set {
-			waveNumber = value;
-		}
-	}
-	public int TotalEscaped {
-		get {
-			return totalEscaped;
-		}
-		set {
-			totalEscaped = value;
-		}
-	}
-	public int RoundEscaped {
-		get {
-			return roundEscaped;
-		} set {
-			roundEscaped = value;
-		}
-	}
-	public int TotalKilled {
-		get {
-			return totalKilled;
-		} set {
-			totalKilled = value;
-		}
-	}
-	public int TotalMoney {
-		get {
-			return totalMoney;
-		} set {
-			totalMoney = value;
-			totalMoneyLabel.text = totalMoney.ToString();
-		}
-	}
-	public AudioSource AudioSource {
-		get {
-			return audioSource;
-		}
-	}
-
-	void Start() {
-		GameStatusImage.gameObject.SetActive(false);
-		audioSource = GetComponent<AudioSource>();
-		showMenu();
-	}
-
-	void Update() {
-		handleEscape();
-	}
-
-	IEnumerator spawn() {
-		if (enemiesPerSpawn > 0 && EnemyList.Count < totalEnemies) {
-			for(int i = 0; i < enemiesPerSpawn; i++) {
-				if(EnemyList.Count < totalEnemies) {
-					Enemy newEnemy = Instantiate(enemies[ Random.Range( 0, enemiesToSpawn)]) as Enemy;
-					newEnemy.transform.position = spawnPoint.transform.position;
-				}
-			}
-			yield return new WaitForSeconds(waitingTime);
-			StartCoroutine(spawn());
-		}
-	}
-		
-	public void RegisterEnemy(Enemy enemy) {
-  		EnemyList.Add(enemy);
-	}
-	
-	public void UnRegister(Enemy enemy) {
-		EnemyList.Remove(enemy);
-		Destroy (enemy.gameObject);
-		isWaveOver();
-	}
-	
-	public void DestroyAllEnemies() {
-		foreach (Enemy enemy in EnemyList) {
-			Destroy(enemy.gameObject);
-		}
-		EnemyList.Clear();
-	}
-
-	private void handleEscape() {
-		if(Input.GetKeyDown(KeyCode.Escape)) {
-			TowerManager.Instance.disableDragSprite();
-			TowerManager.Instance.towerBtnPressed = null;
-		}
-	}
-
-	public void addMoney(int amount){
-		TotalMoney += amount;
-	}
-
-	public void subtractMoney(int amount) {
-		TotalMoney -= amount;
-	}
-
-	public void isWaveOver() {
-		escapedLabel.text = "Escaped " + TotalEscaped + "/10";
-		if ((roundEscaped + TotalKilled) == totalEnemies){
-			if(waveNumber <= enemies.Length){
-				enemiesToSpawn = waveNumber;
-			} 
-			setCurrentGameState();
-			showMenu();
-		}
-	}
-
-	public void setCurrentGameState(){
-		if (TotalEscaped >= 10){
-			currentState = gameStatus.gameover;
-		} else if (waveNumber == 0 && (TotalKilled + RoundEscaped) == 0) {
-			currentState = gameStatus.play;
-		}else if (waveNumber >= totalWaves) {
-			currentState = gameStatus.win;
-		} else {
-			currentState = gameStatus.next;
-		}
-	}
-
-	public void nextWavePressed() {
-		switch (currentState)
-		{
-			case gameStatus.next :
-				waveNumber += 1;
-				totalEnemies += waveNumber;
-				break;
-			 default :
-				totalEnemies = 3;
-				TotalEscaped = 0;
-				waveNumber = 0;
-				enemiesToSpawn = 0;
-				TotalMoney = 10;
-				TowerManager.Instance.DestroyAllTowers();
-				TowerManager.Instance.RenameTagsBuildSites();
-				totalMoneyLabel.text = TotalMoney.ToString();
-				escapedLabel.text = "Escaped " + TotalEscaped + "/10";
-				audioSource.PlayOneShot(SoundManager.Instance.NewGame);
-				break;
-		}
-		DestroyAllEnemies();
-		TotalKilled = 0;
-		roundEscaped = 0;
-		waveLabel.text = "Wave " + (waveNumber + 1);
-		StartCoroutine(spawn());
-		GameStatusImage.gameObject.SetActive(false);
-	}
-
-	public void showMenu() {
-		
-		switch (currentState)
-		{
-			case gameStatus.gameover :
-				GameStatusLabel.text = "Gameover";
-				audioSource.PlayOneShot(SoundManager.Instance.Gameover);
-				nextWaveBtnLabel.text = "Play again";
-				break;
-			case gameStatus.next :
-				nextWaveBtnLabel.text = "Next Wave";
-				GameStatusLabel.text = "Wave " + (waveNumber + 2) + " next.";
-				break;
-			case gameStatus.play :
-				nextWaveBtnLabel.text = "Play";
-				break;
-			case gameStatus.win :
-				nextWaveBtnLabel.text = "Play";
-				GameStatusLabel.text = "You Won!";
-				break;
-		}
-		GameStatusImage.gameObject.SetActive(true);		
-	}
-}
-

@@ -3,12 +3,12 @@ using NUnit.Framework;
 
 [TestFixture]
 public class GameManagerTests  {
-	private GameManager gameManager;
+	private GamePlayManager gameManager;
 	private Enemy enemy;
 
 	[Test]
 	public void CheckRewardMathTest () {
-		gameManager = GameObject.FindObjectOfType<GameManager>();
+		gameManager = GameObject.FindObjectOfType<GamePlayManager>();
 		Debug.Log("this bitch: " + gameManager.TotalMoney);
 		gameManager.TotalMoney = 5;
 		var rewardAmt = 2;
@@ -20,7 +20,7 @@ public class GameManagerTests  {
 
 	[Test]
 	public void CheckCurrentGameStateTest() {
-		gameManager = GameObject.FindObjectOfType<GameManager>();
+		gameManager = GameObject.FindObjectOfType<GamePlayManager>();
 		gameManager.WaveNumber = 0;	
 		gameManager.TotalEscaped = 0;	
 		gameManager.setCurrentGameState();
@@ -44,7 +44,7 @@ public class GameManagerTests  {
 
 	[Test]
 	public void RegisterEnemiesTest() {
-		gameManager = GameObject.FindObjectOfType<GameManager>();
+		gameManager = GameObject.FindObjectOfType<GamePlayManager>();
 		enemy = Enemy.FindObjectOfType<Enemy>();
 		
 		gameManager.EnemyList.Clear();

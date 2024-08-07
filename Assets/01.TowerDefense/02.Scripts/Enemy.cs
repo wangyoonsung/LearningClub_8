@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour {
 		enemy = GetComponent<Transform> ();
 		anim = GetComponent<Animator>();	
 		enemyCollider = GetComponent<Collider2D>();
-		GameManager.Instance.RegisterEnemy(this);	
+		GamePlayManager.Instance.RegisterEnemy(this);	
 	}
 
 	// Update is called once per frame
@@ -53,10 +53,10 @@ public class Enemy : MonoBehaviour {
 		if (other.tag == "WayPoint")
 			target += 1;
 		else if (other.tag == "Finish") {
-			GameManager.Instance.TotalEscaped += 1;
-			GameManager.Instance.RoundEscaped += 1;
-			GameManager.Instance.UnRegister(this);
-			GameManager.Instance.isWaveOver();
+			GamePlayManager.Instance.TotalEscaped += 1;
+			GamePlayManager.Instance.RoundEscaped += 1;
+			GamePlayManager.Instance.UnRegister(this);
+			GamePlayManager.Instance.isWaveOver();
 		} else if (other.tag == "Projectile") {
 			Projectile newP = other.gameObject.GetComponent<Projectile>();
 			enemyHit(newP.AttackStrength);
@@ -67,7 +67,7 @@ public class Enemy : MonoBehaviour {
 	public void enemyHit(int hitPoints) {
 		if (healthPoints - hitPoints > 0) {
 			anim.Play("Hurt");
-			GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hit);
+			GamePlayManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hit);
 			healthPoints -= hitPoints;
 		} else {
 			die();
@@ -77,11 +77,11 @@ public class Enemy : MonoBehaviour {
 	public void die() {
 		isDead = true;
 		anim.SetTrigger("didDie");
-		GameManager.Instance.TotalKilled += 1;
+		GamePlayManager.Instance.TotalKilled += 1;
 		enemyCollider.enabled = false;
-		GameManager.Instance.addMoney(rewardAmt);
-		GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Die);
-		GameManager.Instance.isWaveOver();
+		GamePlayManager.Instance.addMoney(rewardAmt);
+		GamePlayManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Die);
+		GamePlayManager.Instance.isWaveOver();
 		
 	}
 }
