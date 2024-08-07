@@ -188,8 +188,9 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 				TowerManager.Instance.RenameTagsBuildSites();
 				totalMoneyLabel.text = TotalMoney.ToString();
 				escapedLabel.text = "Escaped " + TotalEscaped + "/10";
-				audioSource.PlayOneShot(SoundManager.Instance.NewGame);
-				break;
+				//audioSource.PlayOneShot(SoundLevelManager.Instance.NewGame);
+                SoundManager.Instance.PlaySFX(SoundManager.SFXType.newgame);
+                break;
 		}
 		DestroyAllEnemies();
 		TotalKilled = 0;
@@ -205,8 +206,9 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 		{
 			case gameStatus.gameover :
 				GameStatusLabel.text = "Gameover";
-				audioSource.PlayOneShot(SoundManager.Instance.Gameover);
-				nextWaveBtnLabel.text = "Play again";
+				//audioSource.PlayOneShot(SoundLevelManager.Instance.Gameover);
+                SoundManager.Instance.PlaySFX(SoundManager.SFXType.gameover);
+                nextWaveBtnLabel.text = "Play again";
 				break;
 			case gameStatus.next :
 				nextWaveBtnLabel.text = "Next Wave";

@@ -67,11 +67,14 @@ public class Enemy : MonoBehaviour {
 	public void enemyHit(int hitPoints) {
 		if (healthPoints - hitPoints > 0) {
 			anim.Play("Hurt");
-			GamePlayManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hit);
-			healthPoints -= hitPoints;
+			//GamePlayManager.Instance.AudioSource.PlayOneShot(SoundLevelManager.Instance.Hit);
+            SoundManager.Instance.PlaySFX(SoundManager.SFXType.hit);
+            healthPoints -= hitPoints;
 		} else {
 			die();
 		}
+
+		
 	}
 
 	public void die() {
@@ -80,8 +83,9 @@ public class Enemy : MonoBehaviour {
 		GamePlayManager.Instance.TotalKilled += 1;
 		enemyCollider.enabled = false;
 		GamePlayManager.Instance.addMoney(rewardAmt);
-		GamePlayManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Die);
-		GamePlayManager.Instance.isWaveOver();
+		//GamePlayManager.Instance.AudioSource.PlayOneShot(SoundLevelManager.Instance.Die);
+        SoundManager.Instance.PlaySFX(SoundManager.SFXType.death);
+        GamePlayManager.Instance.isWaveOver();
 		
 	}
 }

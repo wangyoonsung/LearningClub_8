@@ -78,8 +78,9 @@ public class TowerManager : Singleton<TowerManager> {
 
 	public void buyTower(int price) {
 		GamePlayManager.Instance.subtractMoney(price);
-		GamePlayManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.BuildTower);
-	}
+		//GamePlayManager.Instance.AudioSource.PlayOneShot(SoundLevelManager.Instance.BuildTower);
+        SoundManager.Instance.PlaySFX(SoundManager.SFXType.towerBuilt);
+    }
 
 	private void followMouse() {
 		transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);

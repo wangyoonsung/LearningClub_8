@@ -51,12 +51,16 @@ public class Tower : MonoBehaviour {
 		Projectile newProjectile = Instantiate(projectile) as Projectile;
 		newProjectile.transform.localPosition = transform.localPosition;
 		if (newProjectile.ProjectileType == proType.arrow) {
-			audioSource.PlayOneShot(SoundManager.Instance.Arrow);
-		} else if (newProjectile.ProjectileType == proType.fireball) {
-			audioSource.PlayOneShot(SoundManager.Instance.Fireball);
-		}else if (newProjectile.ProjectileType == proType.rock) {
-			audioSource.PlayOneShot(SoundManager.Instance.Rock);
-		}
+			//audioSource.PlayOneShot(SoundLevelManager.Instance.Arrow);
+            SoundManager.Instance.PlaySFX(SoundManager.SFXType.arrow);
+        } else if (newProjectile.ProjectileType == proType.fireball) {
+			//audioSource.PlayOneShot(SoundLevelManager.Instance.Fireball);
+            SoundManager.Instance.PlaySFX(SoundManager.SFXType.fireball);
+        }
+        else if (newProjectile.ProjectileType == proType.rock) {
+			//audioSource.PlayOneShot(SoundLevelManager.Instance.Rock);
+            SoundManager.Instance.PlaySFX(SoundManager.SFXType.rock);
+        }
 		if (targetEnemy == null) {
 			Destroy(newProjectile);
 		}
