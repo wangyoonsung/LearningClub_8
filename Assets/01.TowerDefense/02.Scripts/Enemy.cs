@@ -85,6 +85,7 @@ public class Enemy : MonoBehaviour {
 		GamePlayManager.Instance.addMoney(rewardAmt);
 		//GamePlayManager.Instance.AudioSource.PlayOneShot(SoundLevelManager.Instance.Die);
         SoundManager.Instance.PlaySFX(SoundManager.SFXType.death);
+        EffectManager.Instance.SpawnEffect(EffectType.Explosion, transform.position, Quaternion.identity);
         GamePlayManager.Instance.isWaveOver();
 		
 	}
