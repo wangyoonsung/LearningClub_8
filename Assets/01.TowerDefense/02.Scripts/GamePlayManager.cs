@@ -25,9 +25,11 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 	private Text totalMoneyLabel;
 	[SerializeField]
 	private Image GameStatusImage;
-	[SerializeField]
-	private Text nextWaveBtnLabel;
-	[SerializeField]
+    [SerializeField]
+    private Text nextWaveBtnLabel;
+    [SerializeField]
+    private Text PauseBtnLabel;
+    [SerializeField]
 	private Text escapedLabel;
 	[SerializeField]
 	private Text waveLabel;
@@ -42,6 +44,9 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 	private int enemiesToSpawn = 0;
 	private gameStatus currentState = gameStatus.play;
 	private AudioSource audioSource;
+
+	//배속 저장용
+	private float tempScale = 0.0f;
 
 	public List<Enemy> EnemyList = new List<Enemy>();
 
@@ -224,5 +229,25 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 		}
 		GameStatusImage.gameObject.SetActive(true);		
 	}
+
+    public void GameSpeed()
+    {
+        Time.timeScale = 2.0f;
+    }
+
+    public void PauseGame()
+    {
+        if (Time.timeScale != 0.0f)
+        {
+			tempScale = Time.timeScale; 
+            Time.timeScale = 0.0f;
+            PauseBtnLabel.text = "Play";
+        }
+        else
+        {
+            Time.timeScale = tempScale;
+			PauseBtnLabel.text = "Pause";
+        }
+    }
 }
 
