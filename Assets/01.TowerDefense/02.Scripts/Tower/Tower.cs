@@ -10,8 +10,10 @@ public class Tower : MonoBehaviour {
 	private float attackRadius;
 	[SerializeField]
 	private Projectile projectile;
-	private bool isAttack = false; 
+    [SerializeField]
+    private bool isAttack = false; 
 	private Enemy targetEnemy = null;
+	[SerializeField]
 	private float attackCounter;
 	private AudioSource audioSource;
 
@@ -22,13 +24,14 @@ public class Tower : MonoBehaviour {
 	public virtual void Update() {
 		attackCounter -= Time.deltaTime;
 		if (targetEnemy == null || targetEnemy.IsDead) {
-			Enemy nearestEnemy = GetNearestEnemyInRange();
+            Enemy nearestEnemy = GetNearestEnemyInRange();
 			if (nearestEnemy != null && Vector2.Distance(transform.position, nearestEnemy.transform.position) <= attackRadius) {
 				targetEnemy = nearestEnemy;
 			}
 		} else { 
 			if (attackCounter <= 0f) {
-				isAttack = true;
+                Debug.Log("Is Attack ON!!");
+                isAttack = true;
 			// Reset attack counter
 				attackCounter = timeBetweenAttacks;
 			} else {
@@ -40,8 +43,9 @@ public class Tower : MonoBehaviour {
 		} 
 	}
 
-	void FixedUpdate() {
+	void LateUpdate() {
 		if (isAttack) {
+			Debug.Log("ATTACK!!");
 			Attack();
 		}
 	}
