@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
- using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Debug = UnityEngine.Debug;
+
 //using System.Numerics;
 
 public class TowerManager : Singleton<TowerManager>
@@ -156,34 +158,50 @@ public class TowerManager : Singleton<TowerManager>
 	}
 	public void randomPlaceTower()
 	{
-		int randTowerIdx;
-        //랜덤 자리
+        // 먼저 availablePlaces가 비어 있는지 확인합니다.
+        if (availablePlaces.Count == 0)
+        {
+            Debug.LogError("No available places left to place a tower.");
+            return;
+        }
+
+        int randTowerIdx;
+
+        // 랜덤 자리
         int randPlaceIdx = Random.Range(0, availablePlaces.Count);
-        //랜덤 타워
+
+        Debug.Log("randPlaceIdx >>>>>>>>>> " + randPlaceIdx);
+
+        // 랜덤 타워
         float randomValue = Random.Range(0.0f, 1.0f);
-        if (randomValue < 0.3f) // 35%
+
+        if (randomValue < 0.3f) // 30%
         {
-			randTowerIdx = 0;
+            randTowerIdx = 0;
         }
-        else if (randomValue < 0.55f) // 30%
+        else if (randomValue < 0.55f) // 25%
         {
-			randTowerIdx = 1;
+            randTowerIdx = 1;
         }
-        else if (randomValue < 0.55f) // 20%
+        else if (randomValue < 0.75f) // 20%
         {
             randTowerIdx = 2;
-
         }
-        else // 15%
+        else // 25%
         {
             randTowerIdx = 3;
-
         }
 
-        //생성
+        // 인덱스가 randomTowerList.Count를 초과할 경우 조정
+        if (randTowerIdx >= randomTowerList.Count)
+        {
+            randTowerIdx = randomTowerList.Count - 1;
+        }
+
+        // 생성
         Instantiate(randomTowerList[randTowerIdx], availablePlaces[randPlaceIdx].position, Quaternion.identity);
 
-        //중복 처리 위한 체킹
+        // 중복 처리를 위한 체킹
         availablePlaces.RemoveAt(randPlaceIdx);
     }
 }
