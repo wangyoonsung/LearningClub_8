@@ -16,7 +16,8 @@ public class TowerManager : Singleton<TowerManager>
 
 	[SerializeField]
     public List<GameObject> randomTowerList = new List<GameObject>();
-    private int randomTowerPrice;
+    [SerializeField]
+    private int randomTowerPrice;		//타워 가격
     [SerializeField]
     public List<Transform> places;
     private List<Transform> availablePlaces;
@@ -131,22 +132,60 @@ public class TowerManager : Singleton<TowerManager>
 
 	public void randomSelectedTower()
 	{
-		if (availablePlaces.Count > 0)
+        //돈이 되는지 확인
+        if (randomTowerPrice <= GamePlayManager.Instance.TotalMoney)
 		{
-			// Select a random index from the available places
-			int randomIndex = Random.Range(0, availablePlaces.Count);
-
-			// Instantiate the tower at the selected position
-			Instantiate(randomTowerList[0], availablePlaces[randomIndex].position, Quaternion.identity);
-
-			// Remove the selected place from the available places
-			availablePlaces.RemoveAt(randomIndex);
-		}
-		else
-		{
-			UnityEngine.Debug.Log("All places are occupied, no more towers can be placed.");
-		}
+			//자리가 되는지 확인
+            if (availablePlaces.Count > 0)
+            {
+                
+				//랜덤 타워 생성
+				randomPlaceTower();
+				
+                //타워 가격만큼 돈 깎음
+                GamePlayManager.Instance.subtractMoney(randomTowerPrice);
+                //소리
+                SoundManager.Instance.PlaySFX(SoundManager.SFXType.towerBuilt);
+            }
+            else
+            {
+                UnityEngine.Debug.Log("All places are occupied, no more towers can be placed.");
+            }
+        }
+			  
 	}
+	public void randomPlaceTower()
+	{
+		int randTowerIdx;
+        //랜덤 자리
+        int randPlaceIdx = Random.Range(0, availablePlaces.Count);
+        //랜덤 타워
+        float randomValue = Random.Range(0.0f, 1.0f);
+        if (randomValue < 0.3f) // 35%
+        {
+			randTowerIdx = 0;
+        }
+        else if (randomValue < 0.55f) // 30%
+        {
+			randTowerIdx = 1;
+        }
+        else if (randomValue < 0.55f) // 20%
+        {
+            randTowerIdx = 2;
+
+        }
+        else // 15%
+        {
+            randTowerIdx = 3;
+
+        }
+
+        //생성
+        Instantiate(randomTowerList[randTowerIdx], availablePlaces[randPlaceIdx].position, Quaternion.identity);
+
+        //중복 처리 위한 체킹
+        availablePlaces.RemoveAt(randPlaceIdx);
+    }
 }
 
 
