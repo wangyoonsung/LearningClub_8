@@ -24,6 +24,11 @@ public class TowerManager : Singleton<TowerManager>
     public List<Transform> places;
     private List<Transform> availablePlaces;
 
+	[SerializeField]
+	private GameObject selectTower;
+
+	[SerializeField]
+	private Tower towerchat;
 
     void Start()
 	{
@@ -42,13 +47,31 @@ public class TowerManager : Singleton<TowerManager>
 			Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
 			//If something was hit, the RaycastHit2D.collider will not be null.
-			if (hit.collider.tag == "BuildSite")
+
+			if (hit.collider.tag == "Tower")
 			{
-				// hit.collider.tag = "BuildSiteFull";
-				buildTile = hit.collider;
-				buildTile.tag = "BuildSiteFull";
-				RegisterBuildSite(buildTile);
-				placeTower(hit);
+				if(selectTower != hit.collider.gameObject)
+				{
+                    towerchat.unClickedTower();
+					towerchat = null;
+					selectTower = null;
+                }
+				Debug.Log("tower:" + hit.collider.tag);
+				selectTower = hit.collider.gameObject;
+				Debug.Log("selectTower:" + selectTower);
+				towerchat = selectTower.GetComponent<Tower>();
+				towerchat.clickedTower();
+				//hit.collider.tag = "BuildSiteFull";
+				//buildTile = hit.collider;
+				//buildTile.tag = "BuildSiteFull";
+				//RegisterBuildSite(buildTile);
+				//placeTower(hit);
+			}
+			else if (hit.collider.tag == "SellBtn")
+			{
+				towerchat = null;
+				Destroy(selectTower);
+				selectTower = null;
 			}
 		}
 		if (spriteRenderer.enabled)

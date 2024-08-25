@@ -30,6 +30,8 @@ public class GamePlayManager : Singleton<GamePlayManager> {
     [SerializeField]
     private Text PauseBtnLabel;
     [SerializeField]
+    private Text SpeedBtnLabel;
+    [SerializeField]
 	private Text escapedLabel;
 	[SerializeField]
 	private Text waveLabel;
@@ -232,7 +234,17 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 
     public void GameSpeed()
     {
-        Time.timeScale = 2.0f;
+        
+        if (Time.timeScale != 1.0f)
+        {
+            Time.timeScale = 1.0f;
+            SpeedBtnLabel.text = "2x";
+        }
+        else
+        {
+            Time.timeScale = 2.0f;
+            SpeedBtnLabel.text = "1x";
+        }
     }
 
     public void PauseGame()

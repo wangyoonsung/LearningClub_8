@@ -17,7 +17,10 @@ public class Tower : MonoBehaviour {
 	private float attackCounter;
 	private AudioSource audioSource;
 
-	void Start() {
+	[SerializeField]
+	private GameObject towerUI;
+
+    void Start() {
 		audioSource = GetComponent<AudioSource>();
 	}
 
@@ -117,5 +120,17 @@ public class Tower : MonoBehaviour {
 			}
 		}
 		return nearestEnemy;
+	} 
+	
+	public void clickedTower()
+	{
+        Debug.Log("clicked");
+        towerUI.SetActive(true);
 	}
+
+	public void unClickedTower()
+	{
+        Debug.Log("unbclicked");
+        towerUI.SetActive(false);
+    }
 }
