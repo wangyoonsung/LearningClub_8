@@ -19,9 +19,11 @@ public class Tower : MonoBehaviour {
 	[SerializeField]
 	private int attackDamage;   //공격력
 	[SerializeField]
-	private bool isStun = false;
+	private bool isStun = false;	//스턴 기능 있는 타워인지
+    [SerializeField]
+    private bool isSlow = false;	//속력 느리게 해주는 타워
 
-	[SerializeField]
+    [SerializeField]
 	private GameObject towerUI;
 
     void Start() {
@@ -65,7 +67,11 @@ public class Tower : MonoBehaviour {
 		{
 			//이 타워는 스턴걸 수 있는 타워
 			newProjectile.towerType = TowerType.StunTower;
-
+        }
+		else if(true == isSlow)
+		{
+            //이 타워는 적들 느리게 해주는 타워
+            newProjectile.towerType = TowerType.SlowTower;
         }
 
         newProjectile.transform.localPosition = transform.localPosition;

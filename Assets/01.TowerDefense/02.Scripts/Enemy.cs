@@ -21,6 +21,8 @@ public class Enemy : MonoBehaviour {
 	private float navigationTime = 0;
 	private bool isDead = false;
 	private bool isStunning = false;
+	private bool isSlowing = false;
+	private float enemySpeed = 0.8f;
 
 
     public bool IsDead {
@@ -47,9 +49,9 @@ public class Enemy : MonoBehaviour {
 			navigationTime += Time.deltaTime;
 			if (navigationTime > navigationUpdate) {
 				if (target < wayPoints.Length) {
-					enemy.position = Vector2.MoveTowards(enemy.position, wayPoints[target].position, 0.8f * navigationTime);
+					enemy.position = Vector2.MoveTowards(enemy.position, wayPoints[target].position, enemySpeed * navigationTime);
 				} else {
-					enemy.position = Vector2.MoveTowards(enemy.position, exitPoint.position, 0.8f * navigationTime);
+					enemy.position = Vector2.MoveTowards(enemy.position, exitPoint.position, enemySpeed * navigationTime);
 				}
 				navigationTime = 0;
 			}
@@ -69,7 +71,19 @@ public class Enemy : MonoBehaviour {
 			enemyHit(newP.AttackStrength);
 			if(newP.towerType == TowerType.StunTower)
 			{
-                StartCoroutine(StopMovementForOneSecond());
+				if(false == isStunning)
+				{
+                    StartCoroutine(StopMovementForOneSecond());
+                }
+            }
+			else if (newP.towerType == TowerType.SlowTower)
+			{
+				if(false == isSlowing)
+				{
+                    enemySpeed = 0.48f;
+                    isSlowing = true;
+                }
+				
             }
             Destroy(other.gameObject);
 		}
