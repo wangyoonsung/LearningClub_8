@@ -30,6 +30,9 @@ public class TowerManager : Singleton<TowerManager>
 	[SerializeField]
 	private Tower towerchat;
 
+    //Tower List
+    private Dictionary<string, string> towerDic = new Dictionary<string, string>();
+
     void Start()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -47,16 +50,15 @@ public class TowerManager : Singleton<TowerManager>
 			Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);	
 
-			//Debug.Log("hit:"+hit.collider.tag);
 			//If something was hit, the RaycastHit2D.collider will not be null.
-			if(hit.collider.tag == "BuildSite")
+			/*if(hit.collider.tag == "BuildSite")
 			{
                 buildTile = hit.collider;
                 buildTile.tag = "BuildSiteFull";
                 RegisterBuildSite(buildTile);
                 placeTower(hit);
             }
-            else if (hit.collider.tag == "Tower")
+            else */if (hit.collider.tag == "Tower")
 			{
 				if(selectTower != hit.collider.gameObject && towerchat != null)
 				{
@@ -238,6 +240,9 @@ public class TowerManager : Singleton<TowerManager>
 
         // 생성
         Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
+
+		//tower Dictionary 추가
+		towerDic.Add(availablePlaces[randPlaceIdx].gameObject.name, randomTowerList[randTowerIdx].gameObject.name);
 
         // 중복 처리를 위한 체킹
         availablePlaces.RemoveAt(randPlaceIdx);
