@@ -45,27 +45,30 @@ public class TowerManager : Singleton<TowerManager>
 		{
 			//Get the mouse position on the screen and send a raycast into the game world from that position.
 			Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
-			//If something was hit, the RaycastHit2D.collider will not be null.
+			RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);	
 
-			if (hit.collider.tag == "Tower")
+			//Debug.Log("hit:"+hit.collider.tag);
+			//If something was hit, the RaycastHit2D.collider will not be null.
+			if(hit.collider.tag == "BuildSite")
 			{
-				if(selectTower != hit.collider.gameObject)
+                buildTile = hit.collider;
+                buildTile.tag = "BuildSiteFull";
+                RegisterBuildSite(buildTile);
+                placeTower(hit);
+            }
+            else if (hit.collider.tag == "Tower")
+			{
+				if(selectTower != hit.collider.gameObject && towerchat != null)
 				{
                     towerchat.unClickedTower();
 					towerchat = null;
 					selectTower = null;
                 }
-				Debug.Log("tower:" + hit.collider.tag);
+				//Debug.Log("tower:" + hit.collider.tag);
 				selectTower = hit.collider.gameObject;
-				Debug.Log("selectTower:" + selectTower);
+				//Debug.Log("selectTower:" + selectTower);
 				towerchat = selectTower.GetComponent<Tower>();
 				towerchat.clickedTower();
-				//hit.collider.tag = "BuildSiteFull";
-				//buildTile = hit.collider;
-				//buildTile.tag = "BuildSiteFull";
-				//RegisterBuildSite(buildTile);
-				//placeTower(hit);
 			}
 			else if (hit.collider.tag == "SellBtn")
 			{
@@ -73,6 +76,15 @@ public class TowerManager : Singleton<TowerManager>
 				Destroy(selectTower);
 				selectTower = null;
 			}
+			else
+			{
+				if(towerchat != null)
+				{
+                    towerchat.unClickedTower();
+                    towerchat = null;
+                    selectTower = null;
+                }
+            }
 		}
 		if (spriteRenderer.enabled)
 		{
@@ -221,8 +233,11 @@ public class TowerManager : Singleton<TowerManager>
             randTowerIdx = randomTowerList.Count - 1;
         }
 
+		Vector3 tempPos = availablePlaces[randPlaceIdx].position;
+		tempPos.z = 0;
+
         // 생성
-        Instantiate(randomTowerList[randTowerIdx], availablePlaces[randPlaceIdx].position, Quaternion.identity);
+        Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
 
         // 중복 처리를 위한 체킹
         availablePlaces.RemoveAt(randPlaceIdx);
