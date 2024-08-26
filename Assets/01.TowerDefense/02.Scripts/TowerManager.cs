@@ -31,7 +31,7 @@ public class TowerManager : Singleton<TowerManager>
 	private Tower towerchat;
 
     //Tower List
-    private Dictionary<string, string> towerDic = new Dictionary<string, string>();
+    private Dictionary<string, List<string>> towerDic = new Dictionary<string, List<string>>();
 
     void Start()
 	{
@@ -48,7 +48,9 @@ public class TowerManager : Singleton<TowerManager>
 		{
 			//Get the mouse position on the screen and send a raycast into the game world from that position.
 			Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);	
+			RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
+
+			Debug.Log("hit:"+hit.collider.tag);
 
 			//If something was hit, the RaycastHit2D.collider will not be null.
 			/*if(hit.collider.tag == "BuildSite")
@@ -78,6 +80,15 @@ public class TowerManager : Singleton<TowerManager>
 				Destroy(selectTower);
 				selectTower = null;
 			}
+			else if(hit.collider.tag == "UpgradeBtn")
+			{
+				Debug.Log("put upgrade");
+                towerchat.unClickedTower();
+                towerchat = null;
+                //타워 업그레이드 로직 생성
+                upgradeTower(selectTower.name.Replace("(Clone)", "").Trim());
+                selectTower = null;
+            }
 			else
 			{
 				if(towerchat != null)
@@ -241,11 +252,53 @@ public class TowerManager : Singleton<TowerManager>
         // 생성
         Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
 
-		//tower Dictionary 추가
-		towerDic.Add(availablePlaces[randPlaceIdx].gameObject.name, randomTowerList[randTowerIdx].gameObject.name);
+        //tower Dictionary 추가
+        AddData(randomTowerList[randTowerIdx].gameObject.name, availablePlaces[randPlaceIdx].gameObject.name);
 
         // 중복 처리를 위한 체킹
         availablePlaces.RemoveAt(randPlaceIdx);
+    }
+
+	private void AddData(string name, string position)
+    {
+        // 이름이 Dictionary에 없으면 새로운 리스트를 생성하여 추가
+        if (!towerDic.ContainsKey(name))
+        {
+            towerDic[name] = new List<string>();
+        }
+
+        // 위치 문자열을 리스트에 추가
+        towerDic[name].Add(position);
+    }
+
+    private void upgradeTower(string towerName)
+	{
+		Debug.Log("do Upgrade"+towerName);
+        //towerName으로 dictionary 검색.
+        List<string> positions;
+         if (towerDic.TryGetValue(towerName, out positions))
+         {
+             foreach (string position in positions)
+             {
+                 Debug.Log($"{towerName}의 위치: {position}");
+             }
+         }
+         else
+         {
+             Debug.Log("해당 이름에 대한 위치가 없습니다.");
+         }
+        // 전체 Dictionary 조회
+        /*foreach (KeyValuePair<string, List<string>> entry in towerDic)
+        {
+            string name = entry.Key;
+            List<string> positions = entry.Value;
+
+            Debug.Log($"Name: {name}");
+            foreach (string position in positions)
+            {
+                Debug.Log($" - Position: {position}");
+            }
+        }*/
     }
 }
 

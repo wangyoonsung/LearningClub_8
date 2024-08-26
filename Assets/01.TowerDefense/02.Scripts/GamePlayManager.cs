@@ -238,12 +238,12 @@ public class GamePlayManager : Singleton<GamePlayManager> {
         if (Time.timeScale != 1.0f)
         {
             Time.timeScale = 1.0f;
-            SpeedBtnLabel.text = "2x";
+            SpeedBtnLabel.text = "x2";
         }
         else
         {
             Time.timeScale = 2.0f;
-            SpeedBtnLabel.text = "1x";
+            SpeedBtnLabel.text = "x1";
         }
     }
 
