@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 	
@@ -18,9 +19,11 @@ public class Enemy : MonoBehaviour {
 	private Transform enemy;
 	private Collider2D enemyCollider;
 	private float navigationTime = 0;
-	private bool isDead = false; 
+	private bool isDead = false;
+	private bool isStunning = false;
 
-	public bool IsDead {
+
+    public bool IsDead {
 		get {
 			return isDead;
 		}
@@ -36,6 +39,10 @@ public class Enemy : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if(true == isStunning)
+		{
+			return;
+		}
 		if (wayPoints != null && !isDead) {
 			navigationTime += Time.deltaTime;
 			if (navigationTime > navigationUpdate) {
@@ -60,7 +67,11 @@ public class Enemy : MonoBehaviour {
 		} else if (other.tag == "Projectile") {
 			Projectile newP = other.gameObject.GetComponent<Projectile>();
 			enemyHit(newP.AttackStrength);
-			Destroy(other.gameObject);
+			if(newP.towerType == TowerType.StunTower)
+			{
+                StartCoroutine(StopMovementForOneSecond());
+            }
+            Destroy(other.gameObject);
 		}
 	}
 
@@ -89,4 +100,12 @@ public class Enemy : MonoBehaviour {
         GamePlayManager.Instance.isWaveOver();
 		
 	}
+
+	//스턴 걸렸을 때 isStunning이 true 된다.
+    IEnumerator StopMovementForOneSecond()
+    {
+        isStunning = true;           // 이동 중단
+        yield return new WaitForSeconds(1f);  // 1초 대기
+        isStunning = false;            // 이동 재개
+    }
 }

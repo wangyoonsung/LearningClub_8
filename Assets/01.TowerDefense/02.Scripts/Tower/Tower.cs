@@ -16,6 +16,10 @@ public class Tower : MonoBehaviour {
 	[SerializeField]
 	private float attackCounter;
 	private AudioSource audioSource;
+	[SerializeField]
+	private int attackDamage;   //공격력
+	[SerializeField]
+	private bool isStun = false;
 
 	[SerializeField]
 	private GameObject towerUI;
@@ -56,7 +60,15 @@ public class Tower : MonoBehaviour {
 	public void Attack() {
 		isAttack = false;
 		Projectile newProjectile = Instantiate(projectile) as Projectile;
-		newProjectile.transform.localPosition = transform.localPosition;
+		newProjectile.AttackStrength = attackDamage;
+		if(true == isStun)
+		{
+			//이 타워는 스턴걸 수 있는 타워
+			newProjectile.towerType = TowerType.StunTower;
+
+        }
+
+        newProjectile.transform.localPosition = transform.localPosition;
 		if (newProjectile.ProjectileType == proType.arrow) {
 			//audioSource.PlayOneShot(SoundLevelManager.Instance.Arrow);
             SoundManager.Instance.PlaySFX(SoundManager.SFXType.arrow);
