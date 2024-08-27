@@ -17,7 +17,7 @@ public class Tower : MonoBehaviour {
 	private float attackCounter;
 	private AudioSource audioSource;
 	[SerializeField]
-	private int attackDamage;   //공격력
+	public int attackDamage;   //공격력
 	[SerializeField]
 	private bool isStun = false;	//스턴 기능 있는 타워인지
     [SerializeField]
