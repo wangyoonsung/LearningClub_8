@@ -22,6 +22,7 @@ public class TowerManager : Singleton<TowerManager>
     private int randomTowerPrice;		//타워 가격
     [SerializeField]
     public List<Transform> places;
+    [SerializeField]
     private List<Transform> availablePlaces;
 
 	[SerializeField]
@@ -76,10 +77,8 @@ public class TowerManager : Singleton<TowerManager>
 			}
 			else if (hit.collider.tag == "SellBtn")
 			{
-				towerchat = null;
-				Destroy(selectTower);
-				selectTower = null;
-			}
+				SellTower(towerchat);
+            }
 			else if(hit.collider.tag == "UpgradeBtn")
 			{
 				Debug.Log("put upgrade");
@@ -250,13 +249,30 @@ public class TowerManager : Singleton<TowerManager>
 		tempPos.z = 0;
 
         // 생성
-        Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
+        //Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
+
+		//생성 시 Tower에 현재 포지션 정보 지정
+        GameObject towerInstance = Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
+        Tower towerScript = towerInstance.GetComponent<Tower>();
+		towerScript.setPlace(availablePlaces[randPlaceIdx]);
 
         //tower Dictionary 추가
         AddData(randomTowerList[randTowerIdx].gameObject.name, availablePlaces[randPlaceIdx].gameObject.name);
 
         // 중복 처리를 위한 체킹
         availablePlaces.RemoveAt(randPlaceIdx);
+    }
+	//랜덤 타워 생성을 타워 티어별로도 할 수 있도록 만들어야 할 것 같은데,,,
+
+	private void SellTower(Tower tower)
+	{
+        towerchat = null;
+        Destroy(selectTower);
+        selectTower = null;
+        //타워 판매 대금
+        GamePlayManager.Instance.addMoney(randomTowerPrice);
+		//availablePlaces에도 추가 해야한다.
+		availablePlaces.Add(tower.getPlace());
     }
 
 	private void AddData(string name, string position)
@@ -275,6 +291,11 @@ public class TowerManager : Singleton<TowerManager>
 	{
 		Debug.Log("do Upgrade"+towerName);
         //towerName으로 dictionary 검색.
+		/*
+		 * 총 List가 3개 이상 되는지 확인.
+		 * 3이상일 경우, 현재 위치 포함 + 2개 더 선택하기.
+		 * 셋 다 삭제 후, 현재 위치에 다음 레벨 랜덤 타워 생성
+		 */
         List<string> positions;
          if (towerDic.TryGetValue(towerName, out positions))
          {

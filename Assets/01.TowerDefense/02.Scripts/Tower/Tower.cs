@@ -26,6 +26,9 @@ public class Tower : MonoBehaviour {
     [SerializeField]
 	private GameObject towerUI;
 
+	[SerializeField]
+	private Transform towerPlace;	//현재 타워가 위치한 Place 저장
+
     void Start() {
 		audioSource = GetComponent<AudioSource>();
 	}
@@ -150,5 +153,14 @@ public class Tower : MonoBehaviour {
 	{
         Debug.Log("unbclicked");
         towerUI.SetActive(false);
+    }
+
+	public void setPlace(Transform place)
+	{
+		towerPlace = place;
+    }
+    public Transform getPlace()
+    {
+		return towerPlace;
     }
 }
