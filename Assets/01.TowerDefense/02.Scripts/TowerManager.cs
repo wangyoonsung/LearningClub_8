@@ -249,12 +249,8 @@ public class TowerManager : Singleton<TowerManager>
 		tempPos.z = 0;
 
         // 생성
-        //Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
-
-		//생성 시 Tower에 현재 포지션 정보 지정
-        GameObject towerInstance = Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
-        Tower towerScript = towerInstance.GetComponent<Tower>();
-		towerScript.setPlace(availablePlaces[randPlaceIdx]);
+        GameObject tempTower = Instantiate(randomTowerList[randTowerIdx], tempPos, Quaternion.identity);
+        GamePlayManager.Instance.RegisterTower(tempTower.GetComponent<Tower>());
 
         //tower Dictionary 추가
         AddData(randomTowerList[randTowerIdx].gameObject.name, availablePlaces[randPlaceIdx].gameObject.name);

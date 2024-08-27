@@ -51,6 +51,7 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 	private float tempScale = 0.0f;
 
 	public List<Enemy> EnemyList = new List<Enemy>();
+	public List<Tower> TowerList = new List<Tower>();
 
 	public gameStatus CurrentState {
 		get {
@@ -126,8 +127,13 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 	public void RegisterEnemy(Enemy enemy) {
   		EnemyList.Add(enemy);
 	}
-	
-	public void UnRegister(Enemy enemy) {
+
+    public void RegisterTower(Tower tower)
+    {
+        TowerList.Add(tower);
+    }
+
+    public void UnRegister(Enemy enemy) {
 		EnemyList.Remove(enemy);
 		Destroy (enemy.gameObject);
 		isWaveOver();
