@@ -306,12 +306,18 @@ public class TowerManager : Singleton<TowerManager>
 				upTowerList.Add(tower);
 			}
         }
+		//length 3 체크
+
+		//3이상일 경우 availabePlace 추가
+		//prefab 3개 삭제
+
 
         foreach (Tower tower in upTowerList)
         {
             Debug.Log("uptower: " + tower.gameObject.name);
         }
-        upTowerList.Clear();
+
+        //upTowerList.Clear();
     }
 }
 
