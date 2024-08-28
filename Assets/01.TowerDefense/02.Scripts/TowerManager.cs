@@ -85,7 +85,7 @@ public class TowerManager : Singleton<TowerManager>
                 towerchat.unClickedTower();
                 towerchat = null;
                 //타워 업그레이드 로직 생성
-                upgradeTower(selectTower.name.Replace("(Clone)", "").Trim());
+                upgradeTower(selectTower.name);
                 selectTower = null;
             }
 			else
@@ -255,8 +255,8 @@ public class TowerManager : Singleton<TowerManager>
         Tower towerScript = tempTower.GetComponent<Tower>();
         towerScript.setPlace(availablePlaces[randPlaceIdx]);
 
-        //tower Dictionary 추가
-        AddData(randomTowerList[randTowerIdx].gameObject.name, availablePlaces[randPlaceIdx].gameObject.name);
+        //tower Dictionary 추가->List 추가로 조회
+        //AddData(randomTowerList[randTowerIdx].gameObject.name, availablePlaces[randPlaceIdx].gameObject.name);
 
         // 중복 처리를 위한 체킹
         availablePlaces.RemoveAt(randPlaceIdx);
@@ -295,30 +295,10 @@ public class TowerManager : Singleton<TowerManager>
 		 * 3이상일 경우, 현재 위치 포함 + 2개 더 선택하기.
 		 * 셋 다 삭제 후, 현재 위치에 다음 레벨 랜덤 타워 생성
 		 */
-        List<string> positions;
-         if (towerDic.TryGetValue(towerName, out positions))
-         {
-             foreach (string position in positions)
-             {
-                 Debug.Log($"{towerName}의 위치: {position}");
-             }
-         }
-         else
-         {
-             Debug.Log("해당 이름에 대한 위치가 없습니다.");
-         }
-        // 전체 Dictionary 조회
-        /*foreach (KeyValuePair<string, List<string>> entry in towerDic)
+        foreach (Tower tower in GamePlayManager.Instance.TowerList)
         {
-            string name = entry.Key;
-            List<string> positions = entry.Value;
-
-            Debug.Log($"Name: {name}");
-            foreach (string position in positions)
-            {
-                Debug.Log($" - Position: {position}");
-            }
-        }*/
+			Debug.Log("tower: " + tower.gameObject.name);
+        }
     }
 }
 

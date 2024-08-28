@@ -130,6 +130,7 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 
     public void RegisterTower(Tower tower)
     {
+		Debug.Log("register:"+tower.name);
         TowerList.Add(tower);
     }
 
