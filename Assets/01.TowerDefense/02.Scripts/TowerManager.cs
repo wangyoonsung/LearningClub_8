@@ -31,6 +31,9 @@ public class TowerManager : Singleton<TowerManager>
 	[SerializeField]
 	private Tower towerchat;
 
+	[SerializeField]
+	private List<Tower> upTowerList = new List<Tower>();
+
     //Tower List
     private Dictionary<string, List<string>> towerDic = new Dictionary<string, List<string>>();
 
@@ -298,7 +301,17 @@ public class TowerManager : Singleton<TowerManager>
         foreach (Tower tower in GamePlayManager.Instance.TowerList)
         {
 			Debug.Log("tower: " + tower.gameObject.name);
+			if(towerName == tower.gameObject.name)
+			{
+				upTowerList.Add(tower);
+			}
         }
+
+        foreach (Tower tower in upTowerList)
+        {
+            Debug.Log("uptower: " + tower.gameObject.name);
+        }
+        upTowerList.Clear();
     }
 }
 
